@@ -5,8 +5,8 @@ namespace Depra.Assets.Idents
 {
     public sealed class AssetName : IAssetIdent
     {
-        public static AssetName Empty => new AssetName(string.Empty);
-        public static AssetName Invalid => new AssetName(nameof(Invalid));
+        public static AssetName Empty => new(string.Empty);
+        public static AssetName Invalid => new(nameof(Invalid));
 
         public AssetName(string uri) => Name = uri;
 

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Depra.Assets.Delegates;
 using Depra.Assets.Files;
 using Depra.Assets.Idents;
@@ -63,7 +64,7 @@ public sealed class LoadingFileGroups
     }
 
     [Fact]
-    public async Task LoadAsync_ShouldSucceed()
+    public async UniTask LoadAsync_ShouldSucceed()
     {
         // Arrange.
         var cts = new CancellationTokenSource(CANCEL_DELAY);
@@ -85,7 +86,7 @@ public sealed class LoadingFileGroups
     }
 
     [Fact]
-    public async Task LoadAsync_WithProgress_ShouldSucceed()
+    public async UniTask LoadAsync_WithProgress_ShouldSucceed()
     {
         // Arrange.
         var callbackCalls = 0;
@@ -162,6 +163,6 @@ public sealed class LoadingFileGroups
         fakeAssetFile.Load().Returns(expectedAsset);
         fakeAssetFile.LoadAsync(Arg.Any<DownloadProgressDelegate>(),
                 Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(expectedAsset));
+            .Returns(UniTask.FromResult(expectedAsset));
     }
 }

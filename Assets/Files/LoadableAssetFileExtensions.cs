@@ -27,6 +27,6 @@ namespace Depra.Assets.Files
         /// that provides convenient methods for converting and formatting the size.
         /// </remarks>
         public static FileSize SizeForAll<TAsset>(this IEnumerable<ILoadableAsset<TAsset>> self) =>
-            new FileSize(self.Sum(x => x.Size.SizeInBytes));
+            new(self.Sum(x => x.Size.SizeInBytes));
     }
 }

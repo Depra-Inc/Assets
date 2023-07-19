@@ -8,12 +8,12 @@ namespace Depra.Assets.ValueObjects
     [Serializable]
     public readonly struct FileSize : IEquatable<FileSize>
     {
+        public static FileSize Zero => new(0);
+        public static FileSize Unknown => new(-1);
+        
         public readonly long SizeInBytes;
         public readonly double SizeInKilobytes;
         public readonly double SizeInMegabytes;
-
-        public static FileSize Zero => new FileSize(0);
-        public static FileSize Unknown => new FileSize(-1);
         
         public FileSize(long sizeInBytes)
         {

@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Depra.Assets.Exceptions
 {
-    internal static class Guard
+    public static class Guard
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AgainstNull<TObject>(TObject asset, Func<Exception> exceptionFunc)

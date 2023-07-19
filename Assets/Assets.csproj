@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+      <PackageReference Include="UniTask" Version="2.3.3" />
     </ItemGroup>
 
 </Project>
