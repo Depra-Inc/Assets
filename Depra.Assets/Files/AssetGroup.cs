@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 using Depra.Assets.Delegates;
 using Depra.Assets.Exceptions;
 using Depra.Assets.Idents;
@@ -67,7 +67,7 @@ namespace Depra.Assets.Files
             Size = Children.SizeForAll();
         }
 
-        public async UniTask<IEnumerable<TAsset>> LoadAsync(DownloadProgressDelegate onProgress = null,
+        public async Task<IEnumerable<TAsset>> LoadAsync(DownloadProgressDelegate onProgress = null,
             CancellationToken cancellationToken = default)
         {
             if (IsLoaded)
@@ -76,13 +76,13 @@ namespace Depra.Assets.Files
                 return _loadedAssets;
             }
 
-            await UniTask.WhenAll(Children.Select(asset => LoadAssetAsync(asset, cancellationToken)));
+            await Task.WhenAll(Children.Select(asset => LoadAssetAsync(asset, cancellationToken)));
             OnProgressChanged();
             Size = Children.SizeForAll();
 
             return _loadedAssets;
 
-            async UniTask LoadAssetAsync(ILoadableAsset<TAsset> asset, CancellationToken token)
+            async Task LoadAssetAsync(ILoadableAsset<TAsset> asset, CancellationToken token)
             {
                 var loadedAsset = await asset.LoadAsync(cancellationToken: token);
                 OnProgressChanged();

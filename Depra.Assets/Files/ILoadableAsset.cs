@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Threading;
-using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 using Depra.Assets.Delegates;
 
 namespace Depra.Assets.Files
@@ -35,7 +35,7 @@ namespace Depra.Assets.Files
         /// <param name="onProgress">An optional delegate for tracking the download progress.</param>
         /// <param name="cancellationToken">A cancellation token that can be used to cancel the async operation.</param>
         /// <returns>A task representing the asynchronous loading operation, returning the loaded asset of type <typeparamref name="TAsset"/>.</returns>
-        UniTask<TAsset> LoadAsync(DownloadProgressDelegate onProgress = null,
+        Task<TAsset> LoadAsync(DownloadProgressDelegate onProgress = null,
             CancellationToken cancellationToken = default);
     }
 }
