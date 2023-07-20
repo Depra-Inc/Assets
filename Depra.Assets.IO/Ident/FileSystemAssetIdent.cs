@@ -3,8 +3,9 @@
 
 using System.IO;
 using Depra.Assets.Idents;
+using Depra.Assets.IO.Extensions;
 
-namespace Assets.IO
+namespace Depra.Assets.IO.Ident
 {
     public sealed class FileSystemAssetIdent : IAssetIdent
     {
@@ -44,16 +45,17 @@ namespace Assets.IO
 
         public string RelativeDirectoryPath => SystemInfo.Directory!.Name;
 
-        internal void ThrowIfNotExists()
-        {
-            if (SystemInfo.Exists == false)
-            {
-                throw new FileNotFoundException($"File not found at path: {AbsolutePath}");
-            }
-        }
-
         string IAssetIdent.Uri => AbsolutePath;
 
         string IAssetIdent.RelativeUri => RelativePath;
+    }
+
+    public static class FileSystemAssetIdentExtensions
+    {
+        public static Stream OpenRead(this FileSystemAssetIdent self) => 
+            self.SystemInfo.OpenRead();
+
+        public static Stream OpenWrite(this FileSystemAssetIdent self) => 
+            self.SystemInfo.OpenWrite();
     }
 }

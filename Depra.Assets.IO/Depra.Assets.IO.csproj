@@ -6,11 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Assets\Assets.csproj" />
+        <ProjectReference Include="..\Depra.Assets\Depra.Assets.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Depra.Serialization" Version="1.1.4" />
+        <PackageReference Include="Depra.Serialization" Version="1.1.4" />
     </ItemGroup>
 
 </Project>
