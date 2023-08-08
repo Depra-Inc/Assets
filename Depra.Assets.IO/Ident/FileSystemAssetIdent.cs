@@ -7,55 +7,55 @@ using Depra.Assets.IO.Extensions;
 
 namespace Depra.Assets.IO.Ident
 {
-    public sealed class FileSystemAssetIdent : IAssetIdent
-    {
-        internal readonly FileInfo SystemInfo;
+	public sealed class FileSystemAssetIdent : IAssetIdent
+	{
+		internal readonly FileInfo SystemInfo;
 
-        public static FileSystemAssetIdent Empty => new(string.Empty);
-        public static FileSystemAssetIdent Invalid => new(nameof(Invalid));
+		public static FileSystemAssetIdent Empty => new(string.Empty);
+		public static FileSystemAssetIdent Invalid => new(nameof(Invalid));
 
-        public FileSystemAssetIdent(FileInfo systemInfo, string relativePath = "")
-        {
-            SystemInfo = systemInfo;
-            RelativePath = relativePath;
-            SystemInfo.Directory.CreateIfNotExists();
-            Name = SystemInfo.Name.Replace(Extension, string.Empty);
-        }
+		public FileSystemAssetIdent(FileInfo systemInfo, string relativePath = "")
+		{
+			SystemInfo = systemInfo;
+			RelativePath = relativePath;
+			SystemInfo.Directory.CreateIfNotExists();
+			Name = SystemInfo.Name.Replace(Extension, string.Empty);
+		}
 
-        public FileSystemAssetIdent(string path, string relativePath = "")
-            : this(new FileInfo(path), relativePath) { }
+		public FileSystemAssetIdent(string path, string relativePath = "")
+			: this(new FileInfo(path), relativePath) { }
 
-        public FileSystemAssetIdent(string nameWithExtension, string directory, string relativePath = "")
-            : this(Path.Combine(directory, nameWithExtension), relativePath) { }
+		public FileSystemAssetIdent(string nameWithExtension, string directory, string relativePath = "")
+			: this(Path.Combine(directory, nameWithExtension), relativePath) { }
 
-        public FileSystemAssetIdent(string name, string directory, string extension = null, string relativePath = null)
-            : this(Path.Combine(directory, name + extension), relativePath) { }
+		public FileSystemAssetIdent(string name, string directory, string extension = null, string relativePath = null)
+			: this(Path.Combine(directory, name + extension), relativePath) { }
 
-        public string Name { get; }
+		public string Name { get; }
 
-        public string Extension => SystemInfo.Extension;
-        
-        public string AbsolutePath => SystemInfo.FullName;
-        
-        public string NameWithExtension => Name + Extension;
+		public string Extension => SystemInfo.Extension;
 
-        public string RelativePath { get; }
+		public string AbsolutePath => SystemInfo.FullName;
 
-        public string AbsoluteDirectoryPath => SystemInfo.DirectoryName;
+		public string NameWithExtension => Name + Extension;
 
-        public string RelativeDirectoryPath => SystemInfo.Directory!.Name;
+		public string RelativePath { get; }
 
-        string IAssetIdent.Uri => AbsolutePath;
+		public string AbsoluteDirectoryPath => SystemInfo.DirectoryName;
 
-        string IAssetIdent.RelativeUri => RelativePath;
-    }
+		public string RelativeDirectoryPath => SystemInfo.Directory!.Name;
 
-    public static class FileSystemAssetIdentExtensions
-    {
-        public static Stream OpenRead(this FileSystemAssetIdent self) => 
-            self.SystemInfo.OpenRead();
+		string IAssetIdent.Uri => AbsolutePath;
 
-        public static Stream OpenWrite(this FileSystemAssetIdent self) => 
-            self.SystemInfo.OpenWrite();
-    }
+		string IAssetIdent.RelativeUri => RelativePath;
+	}
+
+	public static class FileSystemAssetIdentExtensions
+	{
+		public static Stream OpenRead(this FileSystemAssetIdent self) =>
+			self.SystemInfo.OpenRead();
+
+		public static Stream OpenWrite(this FileSystemAssetIdent self) =>
+			self.SystemInfo.OpenWrite();
+	}
 }

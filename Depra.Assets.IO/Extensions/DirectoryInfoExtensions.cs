@@ -7,20 +7,20 @@ using System.Runtime.CompilerServices;
 
 namespace Depra.Assets.IO.Extensions
 {
-    public static class DirectoryInfoExtensions
-    {
-        public static bool IsEmpty(this DirectoryInfo directoryInfo) =>
-            directoryInfo.EnumerateFileSystemInfos().Any() == false;
+	public static class DirectoryInfoExtensions
+	{
+		public static bool IsEmpty(this DirectoryInfo directoryInfo) =>
+			directoryInfo.EnumerateFileSystemInfos().Any() == false;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DirectoryInfo CreateIfNotExists(this DirectoryInfo directoryInfo)
-        {
-            if (directoryInfo.Exists == false)
-            {
-                directoryInfo.Create();
-            }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static DirectoryInfo CreateIfNotExists(this DirectoryInfo directoryInfo)
+		{
+			if (directoryInfo.Exists == false)
+			{
+				directoryInfo.Create();
+			}
 
-            return directoryInfo;
-        }
-    }
+			return directoryInfo;
+		}
+	}
 }
