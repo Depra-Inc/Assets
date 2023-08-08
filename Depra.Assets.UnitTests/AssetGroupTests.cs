@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace Depra.Assets.UnitTests;
 
-public sealed class LoadingFileGroups
+public sealed class AssetGroupTests
 {
     private const int ASSET_SIZE = 1;
     private const int GROUP_SIZE = 3;
@@ -28,7 +28,7 @@ public sealed class LoadingFileGroups
     private readonly ITestOutputHelper _output;
     private readonly List<ILoadableAsset<object>> _testAssets;
 
-    public LoadingFileGroups(ITestOutputHelper output)
+    public AssetGroupTests(ITestOutputHelper output)
     {
         _output = output;
         _stopwatch = new Stopwatch();

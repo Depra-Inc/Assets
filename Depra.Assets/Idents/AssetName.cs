@@ -3,16 +3,16 @@
 
 namespace Depra.Assets.Idents
 {
-    public sealed class AssetName : IAssetIdent
-    {
-        public static AssetName Empty => new(string.Empty);
-        public static AssetName Invalid => new(nameof(Invalid));
+	public sealed class AssetName : IAssetIdent
+	{
+		public static AssetName Empty => new(string.Empty);
+		public static AssetName Invalid => new(nameof(Invalid));
 
-        public AssetName(string uri) => Name = uri;
+		public AssetName(string uri) => Name = uri;
 
-        public string Name { get; }
+		public string Name { get; }
 
-        string IAssetIdent.Uri => Name;
-        string IAssetIdent.RelativeUri => Name;
-    }
+		string IAssetIdent.Uri => Name;
+		string IAssetIdent.RelativeUri => Name;
+	}
 }

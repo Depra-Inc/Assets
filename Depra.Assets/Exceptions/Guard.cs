@@ -7,24 +7,24 @@ using System.Runtime.CompilerServices;
 
 namespace Depra.Assets.Exceptions
 {
-    public static class Guard
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AgainstNull<TObject>(TObject asset, Func<Exception> exceptionFunc)
-        {
-            if (asset == null)
-            {
-                throw exceptionFunc();
-            }
-        }
+	public static class Guard
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exceptionFunc)
+		{
+			if (asset == null)
+			{
+				throw exceptionFunc();
+			}
+		}
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AgainstAlreadyContains<T>(T element, List<T> @in, Func<Exception> exceptionFunc)
-        {
-            if (@in.Contains(element))
-            {
-                throw exceptionFunc();
-            }
-        }
-    }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void AgainstAlreadyContains<T>(T element, List<T> @in, Func<Exception> exceptionFunc)
+		{
+			if (@in.Contains(element))
+			{
+				throw exceptionFunc();
+			}
+		}
+	}
 }

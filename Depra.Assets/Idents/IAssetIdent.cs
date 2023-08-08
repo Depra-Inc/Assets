@@ -5,11 +5,11 @@ using JetBrains.Annotations;
 
 namespace Depra.Assets.Idents
 {
-    public interface IAssetIdent
-    {
-        public string Uri { get; }
+	public interface IAssetIdent
+	{
+		public string Uri { get; }
 
-        [UsedImplicitly]
-        public string RelativeUri { get; }
-    }
+		[UsedImplicitly]
+		public string RelativeUri { get; }
+	}
 }
