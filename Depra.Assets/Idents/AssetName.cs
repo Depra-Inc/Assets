@@ -8,6 +8,8 @@ namespace Depra.Assets.Idents
 		public static AssetName Empty => new(string.Empty);
 		public static AssetName Invalid => new(nameof(Invalid));
 
+		public static implicit operator string(AssetName assetName) => assetName.Name;
+
 		public AssetName(string uri) => Name = uri;
 
 		public string Name { get; }
