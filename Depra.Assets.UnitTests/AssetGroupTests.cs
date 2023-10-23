@@ -1,21 +1,18 @@
 // Copyright © 2023 Nikolay Melnikov. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Depra.Assets.Delegates;
-using Depra.Assets.Exceptions;
 using Depra.Assets.Files;
 using Depra.Assets.Idents;
 using Depra.Assets.ValueObjects;
-using FluentAssertions;
-using NSubstitute;
-using Xunit;
-using Xunit.Abstractions;
+#if DEBUG
+using System;
+using Depra.Assets.Exceptions;
+#endif
 
 namespace Depra.Assets.UnitTests;
 
