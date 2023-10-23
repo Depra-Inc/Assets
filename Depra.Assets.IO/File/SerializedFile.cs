@@ -12,8 +12,6 @@ using Depra.Assets.IO.Exceptions;
 using Depra.Assets.IO.Ident;
 using Depra.Assets.ValueObjects;
 using Depra.Serialization.Domain.Interfaces;
-using static Depra.Assets.IO.Exceptions.Guard;
-using static Depra.Assets.Exceptions.Guard;
 
 namespace Depra.Assets.IO.File
 {
@@ -26,8 +24,11 @@ namespace Depra.Assets.IO.File
 
 		public SerializedFile(FileSystemAssetIdent ident, ISerializer serializer)
 		{
-			_ident = ident ?? throw new ArgumentNullException(nameof(ident));
-			_serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+			Guard.AgainstNull(ident, () => new ArgumentNullException(nameof(ident)));
+			Guard.AgainstNull(serializer, () => new ArgumentNullException(nameof(serializer)));
+
+			_ident = ident;
+			_serializer = serializer;
 		}
 
 		public string Name => _ident.Name;
@@ -46,12 +47,12 @@ namespace Depra.Assets.IO.File
 				return _deserializedData;
 			}
 
-			AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
+			Guard.AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
 
 			using var readingStream = _ident.OpenRead();
 			_deserializedData = _serializer.Deserialize<TData>(readingStream);
 
-			AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
+			Guard.AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
 
 			Size = FindSize();
 			return _deserializedData;
@@ -66,14 +67,14 @@ namespace Depra.Assets.IO.File
 				return _deserializedData;
 			}
 
-			AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
+			Guard.AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
 			onProgress?.Invoke(DownloadProgress.Zero);
 
 			await using var readingStream = _ident.OpenRead();
 			_deserializedData = await _serializer.DeserializeAsync<TData>(readingStream, cancellationToken);
 
 			onProgress?.Invoke(DownloadProgress.Full);
-			AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
+			Guard.AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
 
 			Size = FindSize();
 			return _deserializedData;

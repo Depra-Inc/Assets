@@ -3,27 +3,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Depra.Assets.Exceptions
 {
-	public static class Guard
+	internal static class Guard
 	{
+		[Conditional("DEBUG")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exceptionFunc)
+		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exception)
 		{
 			if (asset == null)
 			{
-				throw exceptionFunc();
+				throw exception();
 			}
 		}
 
+		[Conditional("DEBUG")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void AgainstAlreadyContains<T>(T element, List<T> @in, Func<Exception> exceptionFunc)
+		public static void AgainstAlreadyContains<T>(T element, IList<T> @in, Func<Exception> exception)
 		{
 			if (@in.Contains(element))
 			{
-				throw exceptionFunc();
+				throw exception();
 			}
 		}
 	}

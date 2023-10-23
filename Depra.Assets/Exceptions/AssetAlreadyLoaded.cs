@@ -5,10 +5,10 @@ using System;
 
 namespace Depra.Assets.Exceptions
 {
-	internal sealed class AssetAlreadyLoadedException : Exception
+	internal sealed class AssetAlreadyLoaded : Exception
 	{
 		private const string MESSAGE_FORMAT = "Asset {0} already loaded!";
 
-		public AssetAlreadyLoadedException(string assetName) : base(string.Format(MESSAGE_FORMAT, assetName)) { }
+		public AssetAlreadyLoaded(string assetName) : base(string.Format(MESSAGE_FORMAT, assetName)) { }
 	}
 }

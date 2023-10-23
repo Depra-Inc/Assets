@@ -9,10 +9,10 @@ namespace Depra.Assets.IO.Ident
 {
 	public sealed class FileSystemAssetIdent : IAssetIdent
 	{
-		internal readonly FileInfo SystemInfo;
-
 		public static FileSystemAssetIdent Empty => new(string.Empty);
 		public static FileSystemAssetIdent Invalid => new(nameof(Invalid));
+
+		internal readonly FileInfo SystemInfo;
 
 		public FileSystemAssetIdent(FileInfo systemInfo, string relativePath = "")
 		{

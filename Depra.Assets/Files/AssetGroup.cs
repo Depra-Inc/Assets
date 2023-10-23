@@ -20,11 +20,13 @@ namespace Depra.Assets.Files
 		IDisposable
 	{
 		private readonly List<TAsset> _loadedAssets;
-		private readonly List<ILoadableAsset<TAsset>> _children;
+		private readonly IList<ILoadableAsset<TAsset>> _children;
 
-		public AssetGroup(AssetName name, List<ILoadableAsset<TAsset>> children = null)
+		public AssetGroup(AssetName name, IList<ILoadableAsset<TAsset>> children = null)
 		{
-			Ident = name ?? throw new ArgumentNullException(nameof(name));
+			Guard.AgainstNull(name, () => new ArgumentNullException(nameof(name)));
+
+			Ident = name;
 			_children = children ?? new List<ILoadableAsset<TAsset>>();
 			_loadedAssets = new List<TAsset>(_children.Count);
 			Size = _children.SizeForAll();
@@ -50,20 +52,18 @@ namespace Depra.Assets.Files
 			{
 				if (asset.IsLoaded)
 				{
-					yield return asset.Load();
+					continue;
 				}
 
 				var loadedAsset = asset.Load();
-				Guard.AgainstNull(loadedAsset, () => new AssetGroupLoadingException(Name));
-				Guard.AgainstAlreadyContains(loadedAsset, @in: _loadedAssets,
-					() => new AssetAlreadyLoadedException(Name));
+				Guard.AgainstNull(loadedAsset, () => new AssetCannotBeLoadedFromGroup(asset, Name));
+				Guard.AgainstAlreadyContains(loadedAsset, @in: _loadedAssets, () => new AssetAlreadyLoaded(Name));
 
 				_loadedAssets.Add(loadedAsset);
-
-				yield return loadedAsset;
 			}
 
 			Size = Children.SizeForAll();
+			return _loadedAssets;
 		}
 
 		public async Task<IEnumerable<TAsset>> LoadAsync(DownloadProgressDelegate onProgress = null,
@@ -86,9 +86,8 @@ namespace Depra.Assets.Files
 				var loadedAsset = await asset.LoadAsync(cancellationToken: token);
 				OnProgressChanged();
 
-				Guard.AgainstNull(loadedAsset, () => new AssetGroupLoadingException(Name));
-				Guard.AgainstAlreadyContains(loadedAsset, @in: _loadedAssets,
-					() => new AssetAlreadyLoadedException(Name));
+				Guard.AgainstNull(loadedAsset, () => new AssetCannotBeLoadedFromGroup(asset, Name));
+				Guard.AgainstAlreadyContains(loadedAsset, @in: _loadedAssets, () => new AssetAlreadyLoaded(Name));
 
 				_loadedAssets.Add(loadedAsset);
 			}
@@ -110,8 +109,7 @@ namespace Depra.Assets.Files
 			}
 		}
 
-		public IEnumerator<ILoadableAsset<TAsset>> GetEnumerator() =>
-			Children.GetEnumerator();
+		public IEnumerator<ILoadableAsset<TAsset>> GetEnumerator() => Children.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

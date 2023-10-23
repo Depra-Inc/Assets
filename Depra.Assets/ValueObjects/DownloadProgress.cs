@@ -12,11 +12,8 @@ namespace Depra.Assets.ValueObjects
 	[Serializable]
 	public readonly struct DownloadProgress : IEquatable<DownloadProgress>
 	{
-		private const float MIN_VALUE = 0f;
-		private const float MAX_VALUE = 1f;
-
-		public static DownloadProgress Full => new(MAX_VALUE);
-		public static DownloadProgress Zero => new(MIN_VALUE);
+		public static DownloadProgress Full => new(1f);
+		public static DownloadProgress Zero => new(0f);
 
 		public readonly float NormalizedValue;
 
