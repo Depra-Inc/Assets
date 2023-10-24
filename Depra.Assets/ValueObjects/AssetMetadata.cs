@@ -1,4 +1,7 @@
-﻿namespace Depra.Assets.ValueObjects
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+
+namespace Depra.Assets.ValueObjects
 {
 	public sealed record AssetMetadata(IAssetUri Uri, FileSize Size)
 	{

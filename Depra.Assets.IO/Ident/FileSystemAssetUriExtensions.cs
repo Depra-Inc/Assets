@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Depra.Assets.IO.Ident
