@@ -11,23 +11,13 @@ namespace Depra.Assets.Files
 	/// Represents an interface for a loadable asset.
 	/// </summary>
 	/// <typeparam name="TAsset">The type of the asset to be loaded.</typeparam>
-	public interface ILoadableAsset<TAsset> : IAssetFile
+	public interface IAssetFile<TAsset> : IAssetFile
 	{
-		/// <summary>
-		/// Gets a value indicating whether the asset is loaded.
-		/// </summary>
-		bool IsLoaded { get; }
-
 		/// <summary>
 		/// Loads the asset synchronously.
 		/// </summary>
 		/// <returns>The loaded asset of type <typeparamref name="TAsset"/>.</returns>
 		TAsset Load();
-
-		/// <summary>
-		/// Unloads the asset.
-		/// </summary>
-		void Unload();
 
 		/// <summary>
 		/// Loads the asset asynchronously.

@@ -1,7 +1,6 @@
 ﻿// Copyright © 2023 Nikolay Melnikov. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-using Depra.Assets.Idents;
 using Depra.Assets.ValueObjects;
 
 namespace Depra.Assets.Files
@@ -9,13 +8,18 @@ namespace Depra.Assets.Files
 	public interface IAssetFile
 	{
 		/// <summary>
-		/// Returns the reference ID of the asset.
+		/// Returns a value indicating whether the asset is loaded.
 		/// </summary>
-		IAssetIdent Ident { get; }
+		bool IsLoaded { get; }
 
 		/// <summary>
-		/// Returns the size of the asset.
+		/// Returns the metadata of the asset.
 		/// </summary>
-		FileSize Size { get; }
+		AssetMetadata Metadata { get; }
+
+		/// <summary>
+		/// Unloads the asset.
+		/// </summary>
+		void Unload();
 	}
 }

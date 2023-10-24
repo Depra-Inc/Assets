@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.IO;
-using Depra.Assets.Idents;
 using Depra.Assets.IO.Extensions;
+using Depra.Assets.ValueObjects;
 
 namespace Depra.Assets.IO.Ident
 {
-	public sealed class FileSystemAssetIdent : IAssetIdent
+	public sealed class FileSystemAssetUri : IAssetUri
 	{
-		public static FileSystemAssetIdent Empty => new(string.Empty);
-		public static FileSystemAssetIdent Invalid => new(nameof(Invalid));
+		public static FileSystemAssetUri Empty => new(string.Empty);
+		public static FileSystemAssetUri Invalid => new(nameof(Invalid));
 
 		internal readonly FileInfo SystemInfo;
 
-		public FileSystemAssetIdent(FileInfo systemInfo, string relativePath = "")
+		public FileSystemAssetUri(FileInfo systemInfo, string relativePath = "")
 		{
 			SystemInfo = systemInfo;
 			RelativePath = relativePath;
@@ -22,13 +22,13 @@ namespace Depra.Assets.IO.Ident
 			Name = SystemInfo.Name.Replace(Extension, string.Empty);
 		}
 
-		public FileSystemAssetIdent(string path, string relativePath = "")
+		public FileSystemAssetUri(string path, string relativePath = "")
 			: this(new FileInfo(path), relativePath) { }
 
-		public FileSystemAssetIdent(string nameWithExtension, string directory, string relativePath = "")
+		public FileSystemAssetUri(string nameWithExtension, string directory, string relativePath = "")
 			: this(Path.Combine(directory, nameWithExtension), relativePath) { }
 
-		public FileSystemAssetIdent(string name, string directory, string extension = null, string relativePath = null)
+		public FileSystemAssetUri(string name, string directory, string extension = null, string relativePath = null)
 			: this(Path.Combine(directory, name + extension), relativePath) { }
 
 		public string Name { get; }
@@ -45,17 +45,8 @@ namespace Depra.Assets.IO.Ident
 
 		public string RelativeDirectoryPath => SystemInfo.Directory!.Name;
 
-		string IAssetIdent.Uri => AbsolutePath;
+		string IAssetUri.Absolute => AbsolutePath;
 
-		string IAssetIdent.RelativeUri => RelativePath;
-	}
-
-	public static class FileSystemAssetIdentExtensions
-	{
-		public static Stream OpenRead(this FileSystemAssetIdent self) =>
-			self.SystemInfo.OpenRead();
-
-		public static Stream OpenWrite(this FileSystemAssetIdent self) =>
-			self.SystemInfo.OpenWrite();
+		string IAssetUri.Relative => RelativePath;
 	}
 }

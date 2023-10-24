@@ -8,12 +8,10 @@ namespace Depra.Assets.Exceptions
 {
 	internal sealed class AssetCannotBeLoadedFromGroup : Exception
 	{
-		private const string MESSAGE_FORMAT = "Failed to load asset '{0}' from a group '{1}'!";
-
 		public AssetCannotBeLoadedFromGroup(IAssetFile asset, string groupName) :
-			this(asset.Ident.RelativeUri, groupName) { }
+			this(asset.Metadata.Uri.Relative, groupName) { }
 
 		public AssetCannotBeLoadedFromGroup(string assetName, string groupName) :
-			base(string.Format(MESSAGE_FORMAT, assetName, groupName)) { }
+			base($"Failed to load asset '{assetName}' from a group '{groupName}'!") { }
 	}
 }

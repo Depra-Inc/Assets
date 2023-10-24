@@ -9,36 +9,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Depra.Assets.Delegates;
 using Depra.Assets.Exceptions;
-using Depra.Assets.Idents;
 using Depra.Assets.ValueObjects;
 
 namespace Depra.Assets.Files
 {
-	public sealed class AssetGroup<TAsset> :
-		ILoadableAsset<IEnumerable<TAsset>>,
-		IEnumerable<ILoadableAsset<TAsset>>,
+	public sealed class AssetGroup<TAsset> : IAssetFile<IEnumerable<TAsset>>,
+		IEnumerable<IAssetFile<TAsset>>,
 		IDisposable
 	{
 		private readonly List<TAsset> _loadedAssets;
-		private readonly IList<ILoadableAsset<TAsset>> _children;
+		private readonly IList<IAssetFile<TAsset>> _children;
 
-		public AssetGroup(AssetName name, IList<ILoadableAsset<TAsset>> children = null)
+		public AssetGroup(AssetName name, IList<IAssetFile<TAsset>> children = null)
 		{
 			Guard.AgainstNull(name, () => new ArgumentNullException(nameof(name)));
 
-			Ident = name;
-			_children = children ?? new List<ILoadableAsset<TAsset>>();
+			_children = children ?? new List<IAssetFile<TAsset>>();
 			_loadedAssets = new List<TAsset>(_children.Count);
-			Size = _children.SizeForAll();
+			Metadata = new AssetMetadata(name, _children.SizeForAll());
 		}
 
-		public string Name => Ident.Uri;
-		public IAssetIdent Ident { get; }
-		public FileSize Size { get; private set; }
+		public AssetMetadata Metadata { get; }
+		public string Name => Metadata.Uri.Relative;
 		public bool IsLoaded => Children.All(asset => asset.IsLoaded);
-		public IEnumerable<ILoadableAsset<TAsset>> Children => _children;
+		public IEnumerable<IAssetFile<TAsset>> Children => _children;
 
-		public void AddAsset(ILoadableAsset<TAsset> asset)
+		public void AddAsset(IAssetFile<TAsset> asset)
 		{
 			Guard.AgainstNull(asset, () => new ArgumentNullException(nameof(asset)));
 			Guard.AgainstAlreadyContains(asset, _children, () => new AssetAlreadyAddedToGroup(Name));
@@ -62,7 +58,8 @@ namespace Depra.Assets.Files
 				_loadedAssets.Add(loadedAsset);
 			}
 
-			Size = Children.SizeForAll();
+			Metadata.Size = Children.SizeForAll();
+
 			return _loadedAssets;
 		}
 
@@ -76,12 +73,13 @@ namespace Depra.Assets.Files
 			}
 
 			await Task.WhenAll(Children.Select(asset => LoadAssetAsync(asset, cancellationToken)));
+
 			OnProgressChanged();
-			Size = Children.SizeForAll();
+			Metadata.Size = Children.SizeForAll();
 
 			return _loadedAssets;
 
-			async Task LoadAssetAsync(ILoadableAsset<TAsset> asset, CancellationToken token)
+			async Task LoadAssetAsync(IAssetFile<TAsset> asset, CancellationToken token)
 			{
 				var loadedAsset = await asset.LoadAsync(cancellationToken: token);
 				OnProgressChanged();
@@ -94,7 +92,7 @@ namespace Depra.Assets.Files
 
 			void OnProgressChanged()
 			{
-				var progressValue = (float) _loadedAssets.Count / _children.Count;
+				var progressValue = (float) _children.Count / _loadedAssets.Count;
 				var progress = new DownloadProgress(progressValue);
 				onProgress?.Invoke(progress);
 			}
@@ -109,7 +107,7 @@ namespace Depra.Assets.Files
 			}
 		}
 
-		public IEnumerator<ILoadableAsset<TAsset>> GetEnumerator() => Children.GetEnumerator();
+		public IEnumerator<IAssetFile<TAsset>> GetEnumerator() => Children.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

@@ -23,8 +23,8 @@ namespace Depra.Assets.ValueObjects
 		public bool Equals(DownloadProgress other) =>
 			NormalizedValue.Equals(other.NormalizedValue);
 
-		public override bool Equals(object obj) =>
-			obj is DownloadProgress other && Equals(other);
+		public override bool Equals(object other) =>
+			other is DownloadProgress progress && Equals(progress);
 
 		public override int GetHashCode() =>
 			NormalizedValue.GetHashCode();

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Depra.Assets.Delegates;
 using Depra.Assets.Files;
-using Depra.Assets.Idents;
 using Depra.Assets.IO.Exceptions;
 using Depra.Assets.IO.Ident;
 using Depra.Assets.ValueObjects;
@@ -15,30 +14,27 @@ using Depra.Serialization.Domain.Interfaces;
 
 namespace Depra.Assets.IO.File
 {
-	public sealed class SerializedFile<TData> : ILoadableAsset<TData>
+	public sealed class SerializedFile<TData> : IAssetFile<TData>
 	{
 		private readonly ISerializer _serializer;
-		private readonly FileSystemAssetIdent _ident;
+		private readonly FileSystemAssetUri _uri;
 
 		private TData _deserializedData;
 
-		public SerializedFile(FileSystemAssetIdent ident, ISerializer serializer)
+		public SerializedFile(FileSystemAssetUri uri, ISerializer serializer)
 		{
-			Guard.AgainstNull(ident, () => new ArgumentNullException(nameof(ident)));
+			Guard.AgainstNull(uri, () => new ArgumentNullException(nameof(uri)));
 			Guard.AgainstNull(serializer, () => new ArgumentNullException(nameof(serializer)));
 
-			_ident = ident;
 			_serializer = serializer;
+			Metadata = new AssetMetadata(_uri = uri, FileSize.Unknown);
 		}
 
-		public string Name => _ident.Name;
-		public string Path => _ident.AbsolutePath;
-		public string Extension => _ident.Extension;
-
-		public FileSize Size { get; private set; }
+		public string Name => _uri.Name;
+		public AssetMetadata Metadata { get; }
+		public string Path => _uri.AbsolutePath;
+		public string Extension => _uri.Extension;
 		public bool IsLoaded => _deserializedData != null;
-
-		IAssetIdent IAssetFile.Ident => _ident;
 
 		public TData Load()
 		{
@@ -47,14 +43,14 @@ namespace Depra.Assets.IO.File
 				return _deserializedData;
 			}
 
-			Guard.AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
+			Guard.AgainstFileNotExists(_uri.SystemInfo, () => new AssetCannotBeFoundByPath(Name, Path));
 
-			using var readingStream = _ident.OpenRead();
+			using var readingStream = _uri.OpenRead();
 			_deserializedData = _serializer.Deserialize<TData>(readingStream);
 
-			Guard.AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
+			Guard.AgainstNull(_deserializedData, () => new AssetNotLoaded(Name));
 
-			Size = FindSize();
+			Metadata.Size = FindSize();
 			return _deserializedData;
 		}
 
@@ -67,16 +63,16 @@ namespace Depra.Assets.IO.File
 				return _deserializedData;
 			}
 
-			Guard.AgainstFileNotExists(_ident.SystemInfo, () => new AssetNotFoundByPathException(Name, Path));
+			Guard.AgainstFileNotExists(_uri.SystemInfo, () => new AssetCannotBeFoundByPath(Name, Path));
 			onProgress?.Invoke(DownloadProgress.Zero);
 
-			await using var readingStream = _ident.OpenRead();
+			await using var readingStream = _uri.OpenRead();
 			_deserializedData = await _serializer.DeserializeAsync<TData>(readingStream, cancellationToken);
 
 			onProgress?.Invoke(DownloadProgress.Full);
-			Guard.AgainstNull(_deserializedData, () => new AssetNotLoadedException(Name));
+			Guard.AgainstNull(_deserializedData, () => new AssetNotLoaded(Name));
 
-			Size = FindSize();
+			Metadata.Size = FindSize();
 			return _deserializedData;
 		}
 
@@ -89,6 +85,6 @@ namespace Depra.Assets.IO.File
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private FileSize FindSize() => new(_ident.SystemInfo.Length);
+		private FileSize FindSize() => new(_uri.SystemInfo.Length);
 	}
 }

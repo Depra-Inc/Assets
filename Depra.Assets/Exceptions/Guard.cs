@@ -10,7 +10,9 @@ namespace Depra.Assets.Exceptions
 {
 	internal static class Guard
 	{
-		[Conditional("DEBUG")]
+		private const string CONDITION = "DEBUG";
+
+		[Conditional(CONDITION)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exception)
 		{
@@ -20,7 +22,7 @@ namespace Depra.Assets.Exceptions
 			}
 		}
 
-		[Conditional("DEBUG")]
+		[Conditional(CONDITION)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void AgainstAlreadyContains<T>(T element, IList<T> @in, Func<Exception> exception)
 		{

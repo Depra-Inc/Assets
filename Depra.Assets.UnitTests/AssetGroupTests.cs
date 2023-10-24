@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Depra.Assets.Delegates;
 using Depra.Assets.Files;
-using Depra.Assets.Idents;
 using Depra.Assets.ValueObjects;
 #if DEBUG
 using System;
@@ -25,21 +24,22 @@ public sealed class AssetGroupTests
 	private readonly Stopwatch _stopwatch;
 	private readonly AssetName _assetIdent;
 	private readonly ITestOutputHelper _output;
-	private readonly List<ILoadableAsset<object>> _testAssets;
+	private readonly List<IAssetFile<object>> _testAssets;
 
 	public AssetGroupTests(ITestOutputHelper output)
 	{
 		_output = output;
 		_stopwatch = new Stopwatch();
 		_assetIdent = new AssetName(nameof(AssetGroup<object>));
-		_testAssets = new List<ILoadableAsset<object>>(GROUP_SIZE);
+		_testAssets = new List<IAssetFile<object>>(GROUP_SIZE);
 
 		var fileSize = new FileSize(ASSET_SIZE);
 		for (var index = 0; index < GROUP_SIZE; index++)
 		{
 			var expectedAsset = new object();
-			var fakeAssetFile = Substitute.For<ILoadableAsset<object>>();
-			SetupTestAsset(fakeAssetFile, index, fileSize, expectedAsset);
+			var assetName = new AssetName($"{_assetIdent.Name}/{index}");
+			var assetMetadata = new AssetMetadata(assetName, fileSize);
+			var fakeAssetFile = MockAssetFile(assetMetadata, expectedAsset);
 			_testAssets.Add(fakeAssetFile);
 		}
 	}
@@ -49,8 +49,10 @@ public sealed class AssetGroupTests
 	{
 		// Arrange:
 		var assetGroup = new AssetGroup<object>(_assetIdent);
-		var fakeAsset = Substitute.For<ILoadableAsset<object>>();
-		fakeAsset.Ident.RelativeUri.Returns(nameof(fakeAsset));
+		var fakeAsset = Substitute.For<IAssetFile<object>>();
+		var assetUri = new AssetName(nameof(fakeAsset));
+		var assetMetadata = new AssetMetadata(assetUri, FileSize.Unknown);
+		fakeAsset.Metadata.Returns(assetMetadata);
 
 		// Act:
 		assetGroup.AddAsset(fakeAsset);
@@ -79,8 +81,10 @@ public sealed class AssetGroupTests
 	{
 		// Arrange:
 		var assetGroup = new AssetGroup<object>(_assetIdent);
-		var fakeAsset = Substitute.For<ILoadableAsset<object>>();
-		fakeAsset.Ident.RelativeUri.Returns(nameof(fakeAsset));
+		var fakeAsset = Substitute.For<IAssetFile<object>>();
+		var assetUri = new AssetName(nameof(fakeAsset));
+		var assetMetadata = new AssetMetadata(assetUri, FileSize.Unknown);
+		fakeAsset.Metadata.Returns(assetMetadata);
 		assetGroup.AddAsset(fakeAsset);
 
 		// Act:
@@ -114,10 +118,12 @@ public sealed class AssetGroupTests
 	{
 		// Arrange:
 		var assetGroup = new AssetGroup<object>(_assetIdent);
-		var fakeAsset = Substitute.For<ILoadableAsset<object>>();
+		var fakeAsset = Substitute.For<IAssetFile<object>>();
 		fakeAsset.Load().Returns(null);
 		fakeAsset.IsLoaded.Returns(false);
-		fakeAsset.Ident.RelativeUri.Returns(nameof(fakeAsset));
+		var assetUri = new AssetName(nameof(fakeAsset));
+		var assetMetadata = new AssetMetadata(assetUri, FileSize.Unknown);
+		fakeAsset.Metadata.Returns(assetMetadata);
 		assetGroup.AddAsset(fakeAsset);
 
 		// Act:
@@ -132,10 +138,12 @@ public sealed class AssetGroupTests
 	{
 		// Arrange:
 		var assetGroup = new AssetGroup<object>(_assetIdent);
-		var fakeAsset = Substitute.For<ILoadableAsset<object>>();
+		var fakeAsset = Substitute.For<IAssetFile<object>>();
 		fakeAsset.Load().Returns(new object());
 		fakeAsset.IsLoaded.Returns(false);
-		fakeAsset.Ident.RelativeUri.Returns(nameof(fakeAsset));
+		var assetUri = new AssetName(nameof(fakeAsset));
+		var assetMetadata = new AssetMetadata(assetUri, FileSize.Unknown);
+		fakeAsset.Metadata.Returns(assetMetadata);
 		assetGroup.AddAsset(fakeAsset);
 		assetGroup.Load();
 
@@ -220,19 +228,19 @@ public sealed class AssetGroupTests
 	public void SizeOfGroup_ShouldBeThreeBytes()
 	{
 		// Arrange:
-		_testAssets.Sum(x => x.Size.SizeInBytes).Should().Be(3);
+		_testAssets.Sum(x => x.Metadata.Size.Bytes).Should().Be(3);
 		var assetGroup = new AssetGroup<object>(_assetIdent, _testAssets);
 		var unused = assetGroup.Load();
 
 		// Act:
-		var assetSize = assetGroup.Size;
+		var assetSize = assetGroup.Metadata.Size;
 
 		// Assert:
 		assetSize.Should().NotBe(FileSize.Zero);
 		assetSize.Should().NotBe(FileSize.Unknown);
 
 		// Cleanup:
-		_output.WriteLine($"Size of {assetGroup.Ident.Uri} is {assetSize.ToHumanReadableString()}.");
+		_output.WriteLine($"Size of {assetGroup.Metadata.Uri.Absolute} is {assetSize.ToHumanReadableString()}.");
 	}
 
 	[Fact]
@@ -252,14 +260,15 @@ public sealed class AssetGroupTests
 		_output.WriteLine("Asset group unloaded.");
 	}
 
-	private void SetupTestAsset(ILoadableAsset<object> fakeAssetFile, int index,
-		FileSize fileSize, object expectedAsset)
+	private IAssetFile<object> MockAssetFile(AssetMetadata metadata, object expectedAsset)
 	{
-		fakeAssetFile.Ident.Uri.Returns($"{_assetIdent.Name}/{index}");
-		fakeAssetFile.Size.Returns(fileSize);
-		fakeAssetFile.Load().Returns(expectedAsset);
-		fakeAssetFile.LoadAsync(Arg.Any<DownloadProgressDelegate>(),
+		var assetFile = Substitute.For<IAssetFile<object>>();
+		assetFile.Metadata.Returns(metadata);
+		assetFile.Load().Returns(expectedAsset);
+		assetFile.LoadAsync(Arg.Any<DownloadProgressDelegate>(),
 				Arg.Any<CancellationToken>())
 			.Returns(Task.FromResult(expectedAsset));
+
+		return assetFile;
 	}
 }

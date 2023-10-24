@@ -7,8 +7,6 @@ namespace Depra.Assets.Exceptions
 {
 	internal sealed class AssetAlreadyLoaded : Exception
 	{
-		private const string MESSAGE_FORMAT = "Asset {0} already loaded!";
-
-		public AssetAlreadyLoaded(string assetName) : base(string.Format(MESSAGE_FORMAT, assetName)) { }
+		public AssetAlreadyLoaded(string assetName) : base($"Asset '{assetName}' already loaded!") { }
 	}
 }

@@ -11,27 +11,27 @@ namespace Depra.Assets.ValueObjects
 		public static FileSize Zero => new(0);
 		public static FileSize Unknown => new(-1);
 
-		public readonly long SizeInBytes;
-		public readonly double SizeInKilobytes;
-		public readonly double SizeInMegabytes;
+		public readonly long Bytes;
+		public readonly double Kilobytes;
+		public readonly double Megabytes;
 
-		public FileSize(long sizeInBytes)
+		public FileSize(long bytes)
 		{
-			SizeInBytes = sizeInBytes;
-			SizeInKilobytes = (double) SizeInBytes / 1024;
-			SizeInMegabytes = (double) SizeInBytes / (1024 * 1024);
+			Bytes = bytes;
+			Kilobytes = (double) Bytes / 1024;
+			Megabytes = (double) Bytes / (1024 * 1024);
 		}
 
 		public bool Equals(FileSize other) =>
-			SizeInMegabytes.Equals(other.SizeInMegabytes) &&
-			SizeInKilobytes.Equals(other.SizeInKilobytes) &&
-			SizeInBytes == other.SizeInBytes;
+			Megabytes.Equals(other.Megabytes) &&
+			Kilobytes.Equals(other.Kilobytes) &&
+			Bytes == other.Bytes;
 
-		public override bool Equals(object obj) =>
-			obj is FileSize other && Equals(other);
+		public override bool Equals(object other) =>
+			other is FileSize size && Equals(size);
 
 		public override int GetHashCode() =>
-			HashCode.Combine(SizeInBytes, SizeInKilobytes, SizeInMegabytes);
+			HashCode.Combine(Bytes, Kilobytes, Megabytes);
 
 		public override string ToString() => this.ToHumanReadableString();
 	}
@@ -44,9 +44,9 @@ namespace Depra.Assets.ValueObjects
 
 		public static string ToHumanReadableString(this FileSize fileSize) => fileSize switch
 		{
-			{ SizeInMegabytes: > 1 } => string.Format(SIZE_IN_MEGABYTES_FORMAT, fileSize.SizeInMegabytes),
-			{ SizeInKilobytes: > 1 } => string.Format(SIZE_IN_KILOBYTES_FORMAT, fileSize.SizeInKilobytes),
-			_ => string.Format(SIZE_IN_BYTES_FORMAT, fileSize.SizeInBytes)
+			{ Megabytes: > 1 } => string.Format(SIZE_IN_MEGABYTES_FORMAT, fileSize.Megabytes),
+			{ Kilobytes: > 1 } => string.Format(SIZE_IN_KILOBYTES_FORMAT, fileSize.Kilobytes),
+			_ => string.Format(SIZE_IN_BYTES_FORMAT, fileSize.Bytes)
 		};
 	}
 }
