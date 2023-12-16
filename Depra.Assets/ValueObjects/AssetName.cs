@@ -8,6 +8,7 @@ namespace Depra.Assets.ValueObjects
 		public static AssetName Empty => new(string.Empty);
 		public static AssetName Invalid => new(nameof(Invalid));
 
+		public static implicit operator AssetName(string name) => new(name);
 		public static implicit operator string(AssetName assetName) => assetName.Name;
 
 		public string Name { get; } = Name;
