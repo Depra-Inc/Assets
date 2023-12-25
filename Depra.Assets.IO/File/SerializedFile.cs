@@ -2,6 +2,7 @@
 // © 2023 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,5 +87,7 @@ namespace Depra.Assets.IO.File
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private FileSize FindSize() => new(_uri.SystemInfo.Length);
+
+		IEnumerable<IAssetUri> IAssetFile.Dependencies() => Array.Empty<IAssetUri>();
 	}
 }

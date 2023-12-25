@@ -107,6 +107,8 @@ namespace Depra.Assets.Files
 			}
 		}
 
+		public IEnumerable<IAssetUri> Dependencies() => _children.SelectMany(child => child.Dependencies());
+
 		public IEnumerator<IAssetFile<TAsset>> GetEnumerator() => Children.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
