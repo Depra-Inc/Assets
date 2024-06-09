@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
@@ -10,23 +10,30 @@ namespace Depra.Assets.Exceptions
 {
 	internal static class Guard
 	{
-		private const string CONDITION = "DEBUG";
+		private const string TRUE = "DEBUG";
+		private const string FALSE = "THIS_IS_JUST_SOME_RANDOM_STRING_THAT_IS_NEVER_DEFINED";
 
-		[Conditional(CONDITION)]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exception)
-		{
-			if (asset == null)
-			{
-				throw exception();
-			}
-		}
+#if DEBUG || DEV_BUILD
+		private const string ENSURE = TRUE;
+#else
+		private const string ENSURE = FALSE;
+#endif
 
-		[Conditional(CONDITION)]
+		[Conditional(ENSURE)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void AgainstAlreadyContains<T>(T element, IList<T> @in, Func<Exception> exception)
+		public static void AgainstNull<TObject>(TObject asset, Func<Exception> exception) =>
+			Against(asset == null, exception);
+
+		[Conditional(ENSURE)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void AgainstAlreadyContains<T>(T element, IList<T> @in, Func<Exception> exception) =>
+			Against(@in.Contains(element), exception);
+
+		[Conditional(ENSURE)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void Against(bool condition, Func<Exception> exception)
 		{
-			if (@in.Contains(element))
+			if (condition)
 			{
 				throw exception();
 			}

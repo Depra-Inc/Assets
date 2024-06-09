@@ -1,8 +1,7 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System.IO;
-using Depra.Assets.IO.Extensions;
 using Depra.Assets.ValueObjects;
 
 namespace Depra.Assets.IO.Ident
@@ -18,7 +17,11 @@ namespace Depra.Assets.IO.Ident
 		{
 			SystemInfo = systemInfo;
 			RelativePath = relativePath;
-			SystemInfo.Directory.CreateIfNotExists();
+			if (SystemInfo.Directory!.Exists == false)
+			{
+				SystemInfo.Directory.Create();
+			}
+
 			Name = SystemInfo.Name.Replace(Extension, string.Empty);
 		}
 
