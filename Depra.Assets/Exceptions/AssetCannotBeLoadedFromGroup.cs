@@ -1,10 +1,9 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
-using Depra.Assets.Files;
 
-namespace Depra.Assets.Exceptions
+namespace Depra.Assets
 {
 	internal sealed class AssetCannotBeLoadedFromGroup : Exception
 	{

@@ -3,10 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-using Depra.Assets.Delegates;
-using Depra.Assets.Files;
-using Depra.Assets.ValueObjects;
+using Depra.Threading;
 
 namespace Depra.Assets.QoL
 {
@@ -19,11 +16,12 @@ namespace Depra.Assets.QoL
 		bool IAssetFile.IsLoaded => _inner.IsLoaded;
 		AssetMetadata IAssetFile.Metadata => _inner.Metadata;
 
-		TTo IAssetFile<TTo>.Load() => _inner.Load();
 		void IAssetFile.Unload() => _inner.Unload();
 
-		async Task<TTo> IAssetFile<TTo>.LoadAsync(DownloadProgressDelegate onProgress,
-			CancellationToken cancellationToken) => await _inner.LoadAsync(onProgress, cancellationToken);
+		TTo IAssetFile<TTo>.Load() => _inner.Load();
+
+		async ITask<TTo> IAssetFile<TTo>.LoadAsync(DownloadProgressDelegate onProgress, CancellationToken cancellation) =>
+			await _inner.LoadAsync(onProgress, cancellation);
 
 		IEnumerable<IAssetUri> IAssetFile.Dependencies() => _inner.Dependencies();
 	}

@@ -5,10 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Depra.Assets.Delegates;
-using Depra.Assets.Exceptions;
-using Depra.Assets.Files;
-using Depra.Assets.ValueObjects;
+using Depra.Threading;
 #if DEBUG
 using System;
 #endif
@@ -164,7 +161,7 @@ public sealed class AssetGroupTests
 
 		// Act:
 		_stopwatch.Restart();
-		var loadedAssets = await assetGroup.LoadAsync(cancellationToken: cts.Token);
+		var loadedAssets = await assetGroup.LoadAsync(cancellation: cts.Token);
 		loadedAssets = loadedAssets.ToArray();
 		_stopwatch.Stop();
 
@@ -267,7 +264,7 @@ public sealed class AssetGroupTests
 		assetFile.Load().Returns(expectedAsset);
 		assetFile.LoadAsync(Arg.Any<DownloadProgressDelegate>(),
 				Arg.Any<CancellationToken>())
-			.Returns(Task.FromResult(expectedAsset));
+			.Returns(Task.FromResult(expectedAsset).AsITask());
 
 		return assetFile;
 	}

@@ -1,12 +1,16 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
-namespace Depra.Assets.ValueObjects
+using System;
+
+namespace Depra.Assets
 {
-	public interface IAssetUri
+	public interface IAssetUri : IEquatable<IAssetUri>
 	{
-		public string Absolute { get; }
+		string Absolute { get; }
+		string Relative { get; }
 
-		public string Relative { get; }
+		bool IEquatable<IAssetUri>.Equals(IAssetUri other) =>
+			other is not null && Absolute == other.Absolute;
 	}
 }

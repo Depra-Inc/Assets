@@ -23,5 +23,11 @@
     <ItemGroup>
         <ProjectReference Include="..\Depra.Assets\Depra.Assets.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Depra.Threading">
+        <HintPath>..\..\Depra.Threading\Depra.Threading\bin\Release\netstandard2.1\Depra.Threading.dll</HintPath>
+      </Reference>
+    </ItemGroup>
     
 </Project>

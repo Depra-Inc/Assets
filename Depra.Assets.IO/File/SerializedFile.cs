@@ -1,19 +1,14 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
-using Depra.Assets.Delegates;
-using Depra.Assets.Files;
-using Depra.Assets.ValueObjects;
-using Depra.Assets.IO.Exceptions;
-using Depra.Assets.IO.Ident;
 using Depra.Serialization.Domain.Interfaces;
+using Depra.Threading;
 
-namespace Depra.Assets.IO.File
+namespace Depra.Assets.IO
 {
 	public sealed class SerializedFile<TData> : IAssetFile<TData>
 	{
@@ -55,8 +50,8 @@ namespace Depra.Assets.IO.File
 			return _deserializedData;
 		}
 
-		public async Task<TData> LoadAsync(DownloadProgressDelegate onProgress,
-			CancellationToken cancellationToken = default)
+		public async ITask<TData> LoadAsync(DownloadProgressDelegate onProgress,
+			CancellationToken cancellation = default)
 		{
 			if (IsLoaded)
 			{
@@ -68,7 +63,7 @@ namespace Depra.Assets.IO.File
 			onProgress?.Invoke(DownloadProgress.Zero);
 
 			await using var readingStream = _uri.OpenRead();
-			_deserializedData = await _serializer.DeserializeAsync<TData>(readingStream, cancellationToken);
+			_deserializedData = await _serializer.DeserializeAsync<TData>(readingStream, cancellation);
 
 			onProgress?.Invoke(DownloadProgress.Full);
 			Guard.AgainstNull(_deserializedData, () => new AssetNotLoaded(Name));
