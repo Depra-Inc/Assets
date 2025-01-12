@@ -20,14 +20,10 @@ namespace Depra.Assets.QoL
 			}
 		}
 
-		public IAssetFile<TAsset> Get<TAsset>(IAssetUri uri)
-		{
-			var untyped = Get(uri);
-			if (untyped.GetType().IsGenericType) { }
+		IAssetFile IAssetStorage.Get(IAssetUri uri) =>
+			_files.FirstOrDefault(x => x.Metadata.Uri == uri);
 
-			return Get(uri) as IAssetFile<TAsset>;
-		}
-
-		public IAssetFile Get(IAssetUri uri) => _files.FirstOrDefault(x => x.Metadata.Uri == uri);
+		IAssetFile<TAsset> IAssetStorage.Get<TAsset>(IAssetUri uri) =>
+			_files.FirstOrDefault(x => x.Metadata.Uri == uri) as IAssetFile<TAsset>;
 	}
 }
