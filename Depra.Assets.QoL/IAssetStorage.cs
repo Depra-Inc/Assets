@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using Depra.Assets.Files;
 using Depra.Assets.ValueObjects;
@@ -11,7 +11,6 @@ namespace Depra.Assets.QoL
 		void Add(IAssetFile file);
 
 		IAssetFile Get(IAssetUri uri);
-
 		IAssetFile<TAsset> Get<TAsset>(IAssetUri uri);
 	}
 }

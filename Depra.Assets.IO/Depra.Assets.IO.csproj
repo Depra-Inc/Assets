@@ -5,6 +5,11 @@
         <LangVersion>9</LangVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <Optimize>true</Optimize>
+      <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\Depra.Assets\Depra.Assets.csproj" />
     </ItemGroup>

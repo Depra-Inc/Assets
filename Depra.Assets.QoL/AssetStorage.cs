@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +10,7 @@ namespace Depra.Assets.QoL
 {
 	public sealed class AssetStorage : IAssetStorage
 	{
-		private readonly List<IAssetFile> _files;
-
-		public AssetStorage() => _files = new List<IAssetFile>();
-
-		public IAssetFile<TAsset> Get<TAsset>(IAssetUri uri) => (IAssetFile<TAsset>) Get(uri);
-
-		public IAssetFile Get(IAssetUri uri) => _files.FirstOrDefault(x => x.Metadata.Uri == uri);
+		private readonly List<IAssetFile> _files = new();
 
 		public void Add(IAssetFile file)
 		{
@@ -25,5 +19,15 @@ namespace Depra.Assets.QoL
 				_files.Add(file);
 			}
 		}
+
+		public IAssetFile<TAsset> Get<TAsset>(IAssetUri uri)
+		{
+			var untyped = Get(uri);
+			if (untyped.GetType().IsGenericType) { }
+
+			return Get(uri) as IAssetFile<TAsset>;
+		}
+
+		public IAssetFile Get(IAssetUri uri) => _files.FirstOrDefault(x => x.Metadata.Uri == uri);
 	}
 }
