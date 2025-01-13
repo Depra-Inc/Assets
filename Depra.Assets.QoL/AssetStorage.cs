@@ -3,8 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Depra.Assets.Files;
-using Depra.Assets.ValueObjects;
 
 namespace Depra.Assets.QoL
 {

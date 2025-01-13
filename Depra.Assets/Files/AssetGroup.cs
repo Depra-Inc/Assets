@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Collections;
@@ -7,11 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Depra.Assets.Delegates;
-using Depra.Assets.Exceptions;
-using Depra.Assets.ValueObjects;
+using Depra.Threading;
 
-namespace Depra.Assets.Files
+namespace Depra.Assets
 {
 	public sealed class AssetGroup<TAsset> : IAssetFile<IEnumerable<TAsset>>,
 		IEnumerable<IAssetFile<TAsset>>,
@@ -63,8 +61,8 @@ namespace Depra.Assets.Files
 			return _loadedAssets;
 		}
 
-		public async Task<IEnumerable<TAsset>> LoadAsync(DownloadProgressDelegate onProgress = null,
-			CancellationToken cancellationToken = default)
+		public async ITask<IEnumerable<TAsset>> LoadAsync(DownloadProgressDelegate onProgress = null,
+			CancellationToken cancellation = default)
 		{
 			if (IsLoaded)
 			{
@@ -72,7 +70,7 @@ namespace Depra.Assets.Files
 				return _loadedAssets;
 			}
 
-			await Task.WhenAll(Children.Select(asset => LoadAssetAsync(asset, cancellationToken)));
+			await Task.WhenAll(Children.Select(asset => LoadAssetAsync(asset, cancellation)));
 
 			OnProgressChanged();
 			Metadata.Size = Children.Size();
@@ -81,7 +79,7 @@ namespace Depra.Assets.Files
 
 			async Task LoadAssetAsync(IAssetFile<TAsset> asset, CancellationToken token)
 			{
-				var loadedAsset = await asset.LoadAsync(cancellationToken: token);
+				var loadedAsset = await asset.LoadAsync(cancellation: token);
 				OnProgressChanged();
 
 				Guard.AgainstNull(loadedAsset, () => new AssetCannotBeLoadedFromGroup(asset, Name));
@@ -92,7 +90,7 @@ namespace Depra.Assets.Files
 
 			void OnProgressChanged()
 			{
-				var progressValue = (float) _children.Count / _loadedAssets.Count;
+				var progressValue = (float)_children.Count / _loadedAssets.Count;
 				var progress = new DownloadProgress(progressValue);
 				onProgress?.Invoke(progress);
 			}
