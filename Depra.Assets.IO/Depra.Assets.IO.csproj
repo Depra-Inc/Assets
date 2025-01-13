@@ -18,4 +18,10 @@
         <PackageReference Include="Depra.Serialization" Version="1.1.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Depra.Threading">
+        <HintPath>..\..\Depra.Threading\Depra.Threading\bin\Release\netstandard2.1\Depra.Threading.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

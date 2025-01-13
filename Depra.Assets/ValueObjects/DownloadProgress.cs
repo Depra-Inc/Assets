@@ -1,10 +1,10 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Globalization;
 
-namespace Depra.Assets.ValueObjects
+namespace Depra.Assets
 {
 	/// <summary>
 	/// Represents the progress of a download operation.

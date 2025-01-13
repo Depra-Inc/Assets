@@ -1,10 +1,9 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System.IO;
-using Depra.Assets.ValueObjects;
 
-namespace Depra.Assets.IO.Ident
+namespace Depra.Assets.IO
 {
 	public sealed class FileSystemAssetUri : IAssetUri
 	{

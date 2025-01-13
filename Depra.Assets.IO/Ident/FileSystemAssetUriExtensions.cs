@@ -1,19 +1,17 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2025 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Depra.Assets.IO.Ident
+namespace Depra.Assets.IO
 {
 	public static class FileSystemAssetUriExtensions
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Stream OpenRead(this FileSystemAssetUri self) =>
-			self.SystemInfo.OpenRead();
+		public static Stream OpenRead(this FileSystemAssetUri self) => self.SystemInfo.OpenRead();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Stream OpenWrite(this FileSystemAssetUri self) =>
-			self.SystemInfo.OpenWrite();
+		public static Stream OpenWrite(this FileSystemAssetUri self) => self.SystemInfo.OpenWrite();
 	}
 }
