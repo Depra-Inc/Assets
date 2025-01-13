@@ -21,9 +21,9 @@ namespace Depra.Assets.QoL
 		}
 
 		IAssetFile IAssetStorage.Get(IAssetUri uri) =>
-			_files.FirstOrDefault(x => x.Metadata.Uri == uri);
+			_files.FirstOrDefault(x => x.Metadata.Uri.Equals(uri));
 
 		IAssetFile<TAsset> IAssetStorage.Get<TAsset>(IAssetUri uri) =>
-			_files.FirstOrDefault(x => x.Metadata.Uri == uri) as IAssetFile<TAsset>;
+			_files.FirstOrDefault(x => x.Metadata.Uri.Equals(uri)) as IAssetFile<TAsset>;
 	}
 }
